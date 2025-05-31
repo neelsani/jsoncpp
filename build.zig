@@ -23,12 +23,6 @@ pub fn build(b: *std.Build) void {
         .linkage = lib_type,
     });
 
-    // Handle DLL export flags on Windows
-    const cpp_flags = &.{
-        "-std=c++11",
-        "-Wall",
-    };
-
     if (shared_lib and target.result.abi == .msvc) {
         jsoncpp.root_module.addCMacro("JSON_DLL_BUILD", "");
     }
@@ -40,7 +34,6 @@ pub fn build(b: *std.Build) void {
             "src/lib_json/json_value.cpp",
             "src/lib_json/json_writer.cpp",
         },
-        .flags = cpp_flags,
         .root = upstream.path(""),
     });
 
@@ -68,7 +61,6 @@ pub fn build(b: *std.Build) void {
                 "src/test_lib_json/main.cpp",
                 "src/test_lib_json/fuzz.cpp",
             },
-            .flags = cpp_flags,
             .root = upstream.path(""),
         });
 
@@ -85,7 +77,6 @@ pub fn build(b: *std.Build) void {
 
         jsontestrunner.addCSourceFile(.{
             .file = upstream.path("src/jsontestrunner/main.cpp"),
-            .flags = cpp_flags,
         });
 
         if (shared_lib and target.result.abi == .msvc) {
